@@ -129,18 +129,38 @@
             </div>
 
             <div v-if="checkoutMode === 'guest'" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <input
-                v-model="guestEmail"
-                type="email"
-                class="w-full form-input-lg"
-                :placeholder="t('checkout.guestEmailPlaceholder')"
-              />
-              <input
-                v-model="guestPassword"
-                type="password"
-                class="w-full form-input-lg"
-                :placeholder="t('checkout.guestPasswordPlaceholder')"
-              />
+              <div class="space-y-1.5">
+                <label for="guest-checkout-email" class="block text-sm font-bold theme-text-primary">
+                  {{ t('checkout.guestEmailLabel') }}
+                </label>
+                <input
+                  id="guest-checkout-email"
+                  v-model="guestEmail"
+                  type="email"
+                  autocomplete="email"
+                  class="w-full form-input-lg"
+                  :placeholder="t('checkout.guestEmailPlaceholder')"
+                />
+                <p class="text-xs leading-relaxed theme-text-muted">
+                  {{ t('checkout.guestEmailHint') }}
+                </p>
+              </div>
+              <div class="space-y-1.5">
+                <label for="guest-checkout-password" class="block text-sm font-bold theme-text-primary">
+                  {{ t('checkout.guestPasswordLabel') }}
+                </label>
+                <input
+                  id="guest-checkout-password"
+                  v-model="guestPassword"
+                  type="password"
+                  autocomplete="new-password"
+                  class="w-full form-input-lg"
+                  :placeholder="t('checkout.guestPasswordPlaceholder')"
+                />
+                <p class="text-xs leading-relaxed theme-text-muted">
+                  {{ t('checkout.guestPasswordHint') }}
+                </p>
+              </div>
             </div>
 
             <div v-if="checkoutMode === 'guest' && guestCaptchaEnabled" class="space-y-2">
