@@ -23,7 +23,7 @@
           <p class="mt-2 text-sm theme-text-muted">{{ t('auth.forgot.subtitle') }}</p>
         </div>
 
-        <div v-if="!emailVerificationEnabled" class="rounded-xl border theme-alert-danger px-4 py-4 text-center">
+        <div v-if="!passwordResetEnabled" class="rounded-xl border theme-alert-danger px-4 py-4 text-center">
           <p class="text-sm font-medium">{{ t('auth.forgot.disabled') }}</p>
           <router-link to="/auth/login" class="mt-3 inline-block theme-link-muted text-sm">
             {{ t('auth.forgot.backLogin') }}
@@ -164,7 +164,7 @@ const brandSiteName = computed(() => {
   return siteName !== '' ? siteName : 'VivaStore'
 })
 
-const emailVerificationEnabled = computed(() => appStore.config?.email_verification_enabled !== false)
+const passwordResetEnabled = computed(() => appStore.config?.password_reset_enabled !== false)
 
 const email = ref('')
 const code = ref('')
