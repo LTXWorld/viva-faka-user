@@ -152,7 +152,20 @@ onMounted(() => {
                         </label>
 
                         <label class="block">
-                            <span class="text-sm font-semibold text-slate-700">ChatGPT AccessToken</span>
+                            <span class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <span class="text-sm font-semibold text-slate-700">ChatGPT AccessToken</span>
+                                <a
+                                    href="https://chatgpt.com/api/auth/session"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-slate-700"
+                                >
+                                    获取Token
+                                </a>
+                            </span>
+                            <p class="mt-2 text-xs leading-5 text-slate-500">
+                                请先登录 ChatGPT，点击“获取Token”打开官方 session 页面，复制返回 JSON 中的 accessToken 后粘贴到下方。
+                            </p>
                             <textarea
                                 v-model="accessToken"
                                 class="mt-2 min-h-36 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
