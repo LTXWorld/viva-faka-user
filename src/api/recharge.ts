@@ -37,3 +37,41 @@ export async function queryChatGPTPlusRechargeByCardKey(cardKey: string): Promis
     })
     return resp.data.data
 }
+
+export interface GeminiBalanceResp {
+    success?: boolean
+    remaining_uses?: number
+    [key: string]: any
+}
+
+export interface GeminiSubmitPayload {
+    cdkey: string
+    email: string
+    password?: string
+    twofa?: string
+    task_type?: 'full' | 'extract'
+}
+
+export interface GeminiTaskResp {
+    success?: boolean
+    message?: string
+    task_id?: number
+    remaining_uses?: number
+    data?: Record<string, any>
+    [key: string]: any
+}
+
+export async function getGeminiRechargeBalance(cdkey: string): Promise<GeminiBalanceResp> {
+    const resp = await api.post('/public/recharge/gemini/balance', { cdkey })
+    return resp.data.data
+}
+
+export async function submitGeminiRecharge(payload: GeminiSubmitPayload): Promise<GeminiTaskResp> {
+    const resp = await api.post('/public/recharge/gemini/submit', payload)
+    return resp.data.data
+}
+
+export async function queryGeminiRechargeStatus(payload: { cdkey: string; task_id?: number; email?: string }): Promise<GeminiTaskResp> {
+    const resp = await api.post('/public/recharge/gemini/status', payload)
+    return resp.data.data
+}

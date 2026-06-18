@@ -160,6 +160,11 @@ const router = createRouter({
             component: () => import('../views/ChatGPTPlusRedeem.vue'),
         },
         {
+            path: '/redeem/gemini',
+            name: 'gemini-redeem',
+            component: () => import('../views/GeminiRedeem.vue'),
+        },
+        {
             path: '/me',
             name: 'personal-center',
             component: () => import('../views/PersonalCenter.vue'),
