@@ -155,6 +155,11 @@ const router = createRouter({
             component: paymentViewLoader,
         },
         {
+            path: '/redeem',
+            name: 'redeem',
+            component: () => import('../views/Redeem.vue'),
+        },
+        {
             path: '/redeem/chatgpt-plus',
             name: 'chatgpt-plus-redeem',
             component: () => import('../views/ChatGPTPlusRedeem.vue'),

@@ -1,5 +1,21 @@
 import api from './client'
 
+export interface RechargeResolveResp {
+    card_key: string
+    redeem_mode: 'api' | 'external_url' | 'manual' | 'unknown' | string
+    provider?: string
+    product_type?: string
+    target_path?: string
+    redeem_url?: string
+    message?: string
+    [key: string]: any
+}
+
+export async function resolveRechargeCard(cardKey: string): Promise<RechargeResolveResp> {
+    const resp = await api.post('/public/recharge/resolve', { card_key: cardKey })
+    return resp.data.data
+}
+
 export interface ChatGPTPlusSubmitPayload {
     card_key: string
     access_token: string
