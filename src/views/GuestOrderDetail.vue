@@ -323,11 +323,6 @@
                   <h3 class="text-sm font-semibold theme-text-primary">{{
                     t('orderDetail.childFulfillmentTitle') }}</h3>
                   <div class="flex items-center gap-2">
-                    <button v-if="child.fulfillment?.status === 'delivered' && firstFulfillmentCardKey(child.fulfillment)"
-                      class="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm"
-                      @click="redeemFulfillment(child.fulfillment)">
-                      立即兑换
-                    </button>
                   <button v-if="child.fulfillment?.status === 'delivered'"
                     class="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors shadow-sm"
                     :class="fulfillmentCopied ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800'"
@@ -395,11 +390,6 @@
                 @click="handleDownloadFulfillment(order.order_no)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
                 {{ fulfillmentDownloading ? t('orderDetail.fulfillmentDownloading') : t('orderDetail.fulfillmentDownload') }}
-              </button>
-              <button v-if="order.fulfillment.status === 'delivered' && firstFulfillmentCardKey(order.fulfillment)"
-                class="inline-flex items-center gap-1 text-sm font-medium px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm"
-                @click="redeemFulfillment(order.fulfillment)">
-                立即兑换
               </button>
               <button v-if="order.fulfillment.status === 'delivered' && !isFulfillmentTruncated(order.fulfillment)"
                 class="inline-flex items-center gap-1 text-sm font-medium px-4 py-2 rounded-lg transition-colors shadow-sm"
@@ -502,17 +492,6 @@ const handleDownloadFulfillment = async (orderNo: string) => {
   }
 }
 
-const firstFulfillmentCardKey = (fulfillment: any) => {
-  const lines = fulfillmentDeliveryLines(fulfillment)
-  const source = lines.length > 0 ? lines : String(fulfillment?.payload || '').split(/\r?\n/)
-  return source.map((line) => String(line || '').trim()).find((line) => line.length > 0) || ''
-}
-
-const redeemFulfillment = (fulfillment: any) => {
-  const cardKey = firstFulfillmentCardKey(fulfillment)
-  if (!cardKey) return
-  router.push(`/redeem?card_key=${encodeURIComponent(cardKey)}`)
-}
 
 const handleCopyFulfillment = async (fulfillment: any) => {
   const lines = fulfillmentDeliveryLines(fulfillment)

@@ -239,6 +239,17 @@ const cartBounce = ref(false)
 
 const isListMode = computed(() => appStore.config?.template_mode === 'list')
 
+const cardRedeemURL = computed(() => {
+  const raw = appStore.config?.card_redeem_url
+  if (typeof raw !== 'string' || !raw.trim()) return ''
+  try {
+    const parsed = new URL(raw.trim())
+    return parsed.protocol === 'https:' && parsed.hostname ? parsed.href : ''
+  } catch {
+    return ''
+  }
+})
+
 // 内置导航项定义
 const builtinNavDefs: Record<string, { path: string; label: string; icon: string }> = {
   blog: { path: '/blog', label: 'nav.blog', icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2' },
@@ -254,6 +265,18 @@ interface NavItem {
   type: 'route' | 'link'
   target: string
 }
+
+const cardRedeemNavItem = computed<NavItem | null>(() => {
+  if (!cardRedeemURL.value) return null
+  return {
+    key: 'card-redeem',
+    path: cardRedeemURL.value,
+    label: 'nav.cardRedeem',
+    icon: 'M20 12v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8m16 0H4m16 0l-1.5-5.5a1 1 0 00-1-.75h-11a1 1 0 00-1 .75L4 12m4 0v9m8-9v9M9 6.5V4a3 3 0 016 0v2.5',
+    type: 'link',
+    target: '_blank',
+  }
+})
 
 const navConfig = computed(() => appStore.config?.nav_config as {
   builtin?: Record<string, boolean>
@@ -321,6 +344,9 @@ const menuItems = computed<NavItem[]>(() => {
   const items: NavItem[] = [
     { key: 'home', path: '/', label: 'nav.home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1', type: 'route', target: '_self' },
   ]
+  if (cardRedeemNavItem.value) {
+    items.push(cardRedeemNavItem.value)
+  }
   if (!isListMode.value) {
     items.push({ key: 'products', path: '/products', label: 'nav.products', icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', type: 'route', target: '_self' })
   }
@@ -331,7 +357,11 @@ const menuItems = computed<NavItem[]>(() => {
 
 // Mobile drawer only shows items NOT in the bottom nav (Home, Products, Cart, Me are in bottom nav)
 const mobileDrawerItems = computed<NavItem[]>(() => {
-  const items: NavItem[] = [...buildBuiltinNavItems(), ...buildCustomNavItems()]
+  const items: NavItem[] = []
+  if (cardRedeemNavItem.value) {
+    items.push(cardRedeemNavItem.value)
+  }
+  items.push(...buildBuiltinNavItems(), ...buildCustomNavItems())
   return items
 })
 
