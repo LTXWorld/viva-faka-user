@@ -271,7 +271,7 @@ const cardRedeemNavItem = computed<NavItem | null>(() => {
   return {
     key: 'card-redeem',
     path: cardRedeemURL.value,
-    label: 'nav.cardRedeem',
+    label: t('nav.cardRedeem'),
     icon: 'M20 12v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8m16 0H4m16 0l-1.5-5.5a1 1 0 00-1-.75h-11a1 1 0 00-1 .75L4 12m4 0v9m8-9v9M9 6.5V4a3 3 0 016 0v2.5',
     type: 'link',
     target: '_blank',

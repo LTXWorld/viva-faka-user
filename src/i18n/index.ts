@@ -50,7 +50,7 @@ const messages = {
         },
         nav: {
             home: '首页',
-            cardRedeem: '卡密兑换网站',
+            cardRedeem: '卡密兑换网址',
             products: '商品中心',
             blog: '博客',
             notice: '公告',
@@ -1158,7 +1158,7 @@ const messages = {
         },
         nav: {
             home: '首頁',
-            cardRedeem: '卡密兌換網站',
+            cardRedeem: '卡密兌換網址',
             products: '商品中心',
             blog: '部落格',
             notice: '公告',
@@ -2266,7 +2266,7 @@ const messages = {
         },
         nav: {
             home: 'Home',
-            cardRedeem: 'Card Redemption',
+            cardRedeem: 'Card Redemption URL',
             products: 'Products',
             blog: 'Blog',
             notice: 'Notice',
