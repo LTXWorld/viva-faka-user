@@ -20,6 +20,14 @@
             </svg>
             <span class="relative z-10">{{ item.label.startsWith('nav.') ? t(item.label) : item.label }}</span>
           </router-link>
+          <button v-else-if="item.type === 'action'" type="button" aria-haspopup="dialog"
+            @click="openCardRedeemDialog"
+            class="theme-nav-link text-sm relative group flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-4 h-4 shrink-0 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="item.icon" />
+            </svg>
+            <span>{{ item.label }}</span>
+          </button>
           <a v-else :href="item.path" :target="item.target" rel="noopener noreferrer"
             class="theme-nav-link text-sm relative group overflow-hidden flex items-center gap-1.5 whitespace-nowrap shrink-0">
             <svg class="w-4 h-4 shrink-0 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,6 +176,14 @@
               </svg>
               {{ item.label.startsWith('nav.') ? t(item.label) : item.label }}
             </router-link>
+            <button v-else-if="item.type === 'action'" type="button" aria-haspopup="dialog"
+              @click="openCardRedeemDialog"
+              class="w-full text-left px-4 py-3 rounded-xl theme-nav-link text-sm min-h-[44px] flex items-center gap-3">
+              <svg class="w-5 h-5 shrink-0 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" :d="item.icon" />
+              </svg>
+              {{ item.label }}
+            </button>
             <a v-else :href="item.path" :target="item.target" rel="noopener noreferrer" @click="showMobileMenu = false"
               class="block w-full text-left px-4 py-3 rounded-xl theme-nav-link text-sm min-h-[44px] flex items-center gap-3">
               <svg class="w-5 h-5 shrink-0 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,6 +230,31 @@
         </div>
       </div>
     </Transition>
+    <dialog ref="cardRedeemDialog" aria-labelledby="card-redeem-title" aria-describedby="card-redeem-description"
+      class="card-redeem-dialog m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border theme-border theme-panel-strong p-0 shadow-2xl"
+      @click="closeCardRedeemOnBackdrop">
+      <div class="p-5 sm:p-6">
+        <div class="flex items-center justify-between gap-4">
+          <h2 id="card-redeem-title" class="text-lg font-bold theme-text-primary">{{ t('nav.cardRedeemTitle') }}</h2>
+          <button type="button" autofocus @click="cardRedeemDialog?.close()" :aria-label="t('nav.cardRedeemClose')"
+            class="theme-nav-link min-w-[44px] min-h-[44px] flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <p id="card-redeem-description" class="mt-2 text-sm theme-text-muted leading-relaxed">{{ t('nav.cardRedeemDescription') }}</p>
+        <div class="mt-5 space-y-3">
+          <a v-for="provider in cardRedeemProviders" :key="provider.prefix" :href="provider.url"
+            target="_blank" rel="noopener noreferrer"
+            class="block rounded-xl border theme-border theme-btn-neutral p-4 focus-visible:outline-2 focus-visible:outline-offset-2">
+            <span class="block font-semibold theme-text-primary">{{ t('nav.cardRedeemPrefix', { prefix: provider.prefix }) }}</span>
+            <span class="mt-1 block text-sm theme-text-muted break-all">{{ provider.url }}</span>
+            <span class="mt-3 block text-sm font-medium theme-text-accent">{{ t('nav.cardRedeemOpen') }} ↗</span>
+          </a>
+        </div>
+      </div>
+    </dialog>
   </Teleport>
 </template>
 
@@ -239,16 +280,26 @@ const cartBounce = ref(false)
 
 const isListMode = computed(() => appStore.config?.template_mode === 'list')
 
-const cardRedeemURL = computed(() => {
-  const raw = appStore.config?.card_redeem_url
-  if (typeof raw !== 'string' || !raw.trim()) return ''
-  try {
-    const parsed = new URL(raw.trim())
-    return parsed.protocol === 'https:' && parsed.hostname ? parsed.href : ''
-  } catch {
-    return ''
+const cardRedeemDialog = ref<HTMLDialogElement | null>(null)
+const cardRedeemProviders = [
+  { prefix: 'ZERO', url: 'https://zerofaka168.com/' },
+  { prefix: 'PLUS', url: 'https://gptchongzhi.cc.cd/' },
+]
+
+const openCardRedeemDialog = () => {
+  showLangMenu.value = false
+  cardRedeemDialog.value?.showModal()
+}
+
+const closeCardRedeemOnBackdrop = (event: MouseEvent) => {
+  const dialog = cardRedeemDialog.value
+  if (!dialog || event.target !== dialog) return
+  const bounds = dialog.getBoundingClientRect()
+  if (event.clientX < bounds.left || event.clientX > bounds.right ||
+      event.clientY < bounds.top || event.clientY > bounds.bottom) {
+    dialog.close()
   }
-})
+}
 
 // 内置导航项定义
 const builtinNavDefs: Record<string, { path: string; label: string; icon: string }> = {
@@ -262,19 +313,18 @@ interface NavItem {
   path: string
   label: string
   icon: string
-  type: 'route' | 'link'
+  type: 'route' | 'link' | 'action'
   target: string
 }
 
-const cardRedeemNavItem = computed<NavItem | null>(() => {
-  if (!cardRedeemURL.value) return null
+const cardRedeemNavItem = computed<NavItem>(() => {
   return {
     key: 'card-redeem',
-    path: cardRedeemURL.value,
+    path: '',
     label: t('nav.cardRedeem'),
     icon: 'M20 12v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8m16 0H4m16 0l-1.5-5.5a1 1 0 00-1-.75h-11a1 1 0 00-1 .75L4 12m4 0v9m8-9v9M9 6.5V4a3 3 0 016 0v2.5',
-    type: 'link',
-    target: '_blank',
+    type: 'action',
+    target: '_self',
   }
 })
 
@@ -431,6 +481,16 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.card-redeem-dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+  backdrop-filter: blur(4px);
+}
+
+.card-redeem-dialog {
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
