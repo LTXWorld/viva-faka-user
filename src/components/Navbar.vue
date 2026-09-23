@@ -282,7 +282,7 @@ const isListMode = computed(() => appStore.config?.template_mode === 'list')
 
 const cardRedeemDialog = ref<HTMLDialogElement | null>(null)
 const cardRedeemProviders = [
-  { prefix: 'ZERO', url: 'https://zerofaka168.com/' },
+  { prefix: 'BBL', url: 'https://bblaiplus.com' },
   { prefix: 'PLUS', url: 'https://gptchongzhi.cc.cd/' },
 ]
 
