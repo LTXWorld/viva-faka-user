@@ -22,3 +22,7 @@ export const fulfillmentStatusLabel = (t: TranslateFn, status?: string, scope: F
   }
   return map[status] || status
 }
+
+// Automatic fulfillment delivers card inventory; manual/logistics content keeps its own presentation.
+export const isDeliveredCard = (fulfillment?: { type?: string; status?: string; payload?: string } | null) =>
+  fulfillment?.type === 'auto' && fulfillment.status === 'delivered' && Boolean(fulfillment.payload?.trim())
