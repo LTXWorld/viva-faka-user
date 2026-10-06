@@ -58,7 +58,6 @@ const messages = {
             openWebsite: '前往兑换网站',
             noMatch: '未找到匹配的前缀，请核对卡密或联系客服确认兑换网址。',
             rulesTitle: '卡密前缀与兑换网址',
-            defaultWebsite: '通用兑换网址',
             empty: '暂未配置兑换网址，请联系客服。',
         },
         nav: {
@@ -1197,7 +1196,6 @@ const messages = {
             openWebsite: '前往兌換網站',
             noMatch: '找不到匹配的前綴，請核對卡密或聯絡客服確認兌換網址。',
             rulesTitle: '卡密前綴與兌換網址',
-            defaultWebsite: '通用兌換網址',
             empty: '暫未設定兌換網址，請聯絡客服。',
         },
         nav: {
@@ -2336,7 +2334,6 @@ const messages = {
             openWebsite: 'Open redemption website',
             noMatch: 'No matching prefix. Check your code or contact support to confirm the redemption URL.',
             rulesTitle: 'Card prefixes and redemption URLs',
-            defaultWebsite: 'General redemption URL',
             empty: 'No redemption URL has been configured. Please contact support.',
         },
         nav: {

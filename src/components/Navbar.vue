@@ -257,12 +257,7 @@
             <span class="mt-1 block text-sm theme-text-muted break-all">{{ provider.url }}</span>
             <span class="mt-3 block text-sm font-medium theme-text-accent">{{ t('nav.cardRedeemOpen') }} ↗</span>
           </a>
-          <a v-if="cardRedeemURL" :href="cardRedeemURL" target="_blank" rel="noopener noreferrer"
-            class="block rounded-xl border theme-border theme-btn-neutral p-4">
-            <span class="block font-semibold theme-text-primary">{{ t('cardRedeem.defaultWebsite') }}</span>
-            <span class="mt-1 block text-sm theme-text-muted break-all">{{ cardRedeemURL }}</span>
-          </a>
-          <p v-if="!cardRedeemProviders.length && !cardRedeemURL" class="theme-text-muted">{{ t('cardRedeem.empty') }}</p>
+          <p v-if="!cardRedeemProviders.length" class="theme-text-muted">{{ t('cardRedeem.empty') }}</p>
           <router-link v-if="cardRedeemProviders.length" to="/redeem" @click="cardRedeemDialog?.close(); showMobileMenu = false"
             class="block rounded-xl theme-btn-primary px-4 py-3 text-center font-semibold">{{ t('cardRedeem.codeLabel') }}</router-link>
         </div>
@@ -279,7 +274,7 @@ import { useCartStore } from '../stores/cart'
 import { useUserAuthStore } from '../stores/userAuth'
 import { useTheme } from '../utils/theme'
 import { SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
-import { getCardRedeemRules, getCardRedeemURL } from '../utils/cardRedeem'
+import { getCardRedeemRules } from '../utils/cardRedeem'
 
 const { t, locale } = useI18n()
 const appStore = useAppStore()
@@ -296,7 +291,6 @@ const isListMode = computed(() => appStore.config?.template_mode === 'list')
 
 const cardRedeemDialog = ref<HTMLDialogElement | null>(null)
 const cardRedeemProviders = computed(() => getCardRedeemRules(appStore.config?.card_redeem_rules))
-const cardRedeemURL = computed(() => getCardRedeemURL(appStore.config?.card_redeem_url))
 const cardRedeemRefreshing = ref(false)
 const cardRedeemRefreshFailed = ref(false)
 
@@ -336,14 +330,14 @@ interface NavItem {
 }
 
 const cardRedeemNavItem = computed<NavItem | null>(() => {
-  if (!cardRedeemProviders.value.length && !cardRedeemURL.value) return null
+  if (!cardRedeemProviders.value.length) return null
   return {
     key: 'card-redeem',
-    path: cardRedeemProviders.value.length ? '' : cardRedeemURL.value,
+    path: '',
     label: t('nav.cardRedeem'),
     icon: 'M20 12v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8m16 0H4m16 0l-1.5-5.5a1 1 0 00-1-.75h-11a1 1 0 00-1 .75L4 12m4 0v9m8-9v9M9 6.5V4a3 3 0 016 0v2.5',
-    type: cardRedeemProviders.value.length ? 'action' : 'link',
-    target: cardRedeemProviders.value.length ? '_self' : '_blank',
+    type: 'action',
+    target: '_self',
   }
 })
 

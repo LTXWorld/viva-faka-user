@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '../stores/app'
 import { usePageSeo } from '../composables/usePageSeo'
-import { getCardRedeemRules, getCardRedeemURL, matchCardRedeemRule } from '../utils/cardRedeem'
+import { getCardRedeemRules, matchCardRedeemRule } from '../utils/cardRedeem'
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -11,7 +11,6 @@ const code = ref('')
 const refreshing = ref(true)
 const refreshFailed = ref(false)
 const rules = computed(() => getCardRedeemRules(appStore.config?.card_redeem_rules))
-const defaultURL = computed(() => getCardRedeemURL(appStore.config?.card_redeem_url))
 const matchedRule = computed(() => matchCardRedeemRule(code.value, rules.value))
 
 usePageSeo({ title: () => t('nav.cardRedeem'), canonicalPath: () => '/redeem' })
@@ -68,11 +67,7 @@ onMounted(refreshConfig)
           </article>
         </section>
 
-        <section v-if="defaultURL" class="theme-panel border rounded-2xl p-5 space-y-3">
-          <h2 class="font-semibold theme-text-primary">{{ t('cardRedeem.defaultWebsite') }}</h2>
-          <a :href="defaultURL" target="_blank" rel="noopener noreferrer" class="inline-block break-all theme-text-accent underline underline-offset-4">{{ defaultURL }}</a>
-        </section>
-        <p v-if="!rules.length && !defaultURL" class="theme-panel border rounded-2xl p-6 theme-text-muted">{{ t('cardRedeem.empty') }}</p>
+        <p v-if="!rules.length" class="theme-panel border rounded-2xl p-6 theme-text-muted">{{ t('cardRedeem.empty') }}</p>
       </template>
     </div>
   </div>
