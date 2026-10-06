@@ -48,6 +48,19 @@ const messages = {
         error: {
             email_invalid: '邮箱格式不正确',
         },
+        cardRedeem: {
+            loadFailed: '无法获取最新兑换网址，请重试。',
+            subtitle: '按卡密开头的字符选择对应兑换网站，也可以输入卡密自动查找。',
+            codeLabel: '查找兑换网址',
+            codePlaceholder: '粘贴卡密或输入卡密前缀',
+            privacyTip: '卡密仅在当前浏览器内匹配，不会随链接发送到兑换网站。匹配不区分大小写，优先使用更长的前缀。',
+            prefixLabel: '以 [{prefix}] 开头的卡密',
+            openWebsite: '前往兑换网站',
+            noMatch: '未找到匹配的前缀，请核对卡密或联系客服确认兑换网址。',
+            rulesTitle: '卡密前缀与兑换网址',
+            defaultWebsite: '通用兑换网址',
+            empty: '暂未配置兑换网址，请联系客服。',
+        },
         nav: {
             home: '首页',
             cardRedeem: '卡密兑换网址',
@@ -1174,6 +1187,19 @@ const messages = {
         error: {
             email_invalid: '郵箱格式不正確',
         },
+        cardRedeem: {
+            loadFailed: '無法取得最新兌換網址，請重試。',
+            subtitle: '按卡密開頭的字元選擇對應兌換網站，也可以輸入卡密自動查找。',
+            codeLabel: '查找兌換網址',
+            codePlaceholder: '貼上卡密或輸入卡密前綴',
+            privacyTip: '卡密僅在目前瀏覽器內匹配，不會隨連結傳送到兌換網站。匹配不區分大小寫，優先使用更長的前綴。',
+            prefixLabel: '以 [{prefix}] 開頭的卡密',
+            openWebsite: '前往兌換網站',
+            noMatch: '找不到匹配的前綴，請核對卡密或聯絡客服確認兌換網址。',
+            rulesTitle: '卡密前綴與兌換網址',
+            defaultWebsite: '通用兌換網址',
+            empty: '暫未設定兌換網址，請聯絡客服。',
+        },
         nav: {
             home: '首頁',
             cardRedeem: '卡密兌換網址',
@@ -2299,6 +2325,19 @@ const messages = {
         },
         error: {
             email_invalid: 'Invalid email format',
+        },
+        cardRedeem: {
+            loadFailed: 'Unable to load the latest redemption URLs. Please try again.',
+            subtitle: 'Choose a redemption website by card prefix, or enter your code to find it.',
+            codeLabel: 'Find redemption URL',
+            codePlaceholder: 'Paste a card code or enter its prefix',
+            privacyTip: 'Matching happens in your browser. Your code is not included in the website link. Matching ignores case and prefers the longest prefix.',
+            prefixLabel: 'Cards starting with [{prefix}]',
+            openWebsite: 'Open redemption website',
+            noMatch: 'No matching prefix. Check your code or contact support to confirm the redemption URL.',
+            rulesTitle: 'Card prefixes and redemption URLs',
+            defaultWebsite: 'General redemption URL',
+            empty: 'No redemption URL has been configured. Please contact support.',
         },
         nav: {
             home: 'Home',

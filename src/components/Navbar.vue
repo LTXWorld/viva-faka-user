@@ -244,7 +244,12 @@
           </button>
         </div>
         <p id="card-redeem-description" class="mt-2 text-sm theme-text-muted leading-relaxed">{{ t('nav.cardRedeemDescription') }}</p>
-        <div class="mt-5 space-y-3">
+        <p v-if="cardRedeemRefreshing" role="status" class="mt-5 theme-text-muted">{{ t('common.loading') }}</p>
+        <div v-else-if="cardRedeemRefreshFailed" role="alert" class="mt-5 space-y-3">
+          <p class="theme-text-muted">{{ t('cardRedeem.loadFailed') }}</p>
+          <button type="button" class="theme-btn-primary rounded-xl px-4 py-2" @click="openCardRedeemDialog">{{ t('emptyState.retry') }}</button>
+        </div>
+        <div v-else class="mt-5 space-y-3">
           <a v-for="provider in cardRedeemProviders" :key="provider.prefix" :href="provider.url"
             target="_blank" rel="noopener noreferrer"
             class="block rounded-xl border theme-border theme-btn-neutral p-4 focus-visible:outline-2 focus-visible:outline-offset-2">
@@ -252,6 +257,14 @@
             <span class="mt-1 block text-sm theme-text-muted break-all">{{ provider.url }}</span>
             <span class="mt-3 block text-sm font-medium theme-text-accent">{{ t('nav.cardRedeemOpen') }} ↗</span>
           </a>
+          <a v-if="cardRedeemURL" :href="cardRedeemURL" target="_blank" rel="noopener noreferrer"
+            class="block rounded-xl border theme-border theme-btn-neutral p-4">
+            <span class="block font-semibold theme-text-primary">{{ t('cardRedeem.defaultWebsite') }}</span>
+            <span class="mt-1 block text-sm theme-text-muted break-all">{{ cardRedeemURL }}</span>
+          </a>
+          <p v-if="!cardRedeemProviders.length && !cardRedeemURL" class="theme-text-muted">{{ t('cardRedeem.empty') }}</p>
+          <router-link v-if="cardRedeemProviders.length" to="/redeem" @click="cardRedeemDialog?.close(); showMobileMenu = false"
+            class="block rounded-xl theme-btn-primary px-4 py-3 text-center font-semibold">{{ t('cardRedeem.codeLabel') }}</router-link>
         </div>
       </div>
     </dialog>
@@ -266,6 +279,7 @@ import { useCartStore } from '../stores/cart'
 import { useUserAuthStore } from '../stores/userAuth'
 import { useTheme } from '../utils/theme'
 import { SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
+import { getCardRedeemRules, getCardRedeemURL } from '../utils/cardRedeem'
 
 const { t, locale } = useI18n()
 const appStore = useAppStore()
@@ -281,14 +295,18 @@ const cartBounce = ref(false)
 const isListMode = computed(() => appStore.config?.template_mode === 'list')
 
 const cardRedeemDialog = ref<HTMLDialogElement | null>(null)
-const cardRedeemProviders = [
-  { prefix: 'BBL', url: 'https://bblaiplus.com' },
-  { prefix: 'PLUS', url: 'https://gptchongzhi.cc.cd/' },
-]
+const cardRedeemProviders = computed(() => getCardRedeemRules(appStore.config?.card_redeem_rules))
+const cardRedeemURL = computed(() => getCardRedeemURL(appStore.config?.card_redeem_url))
+const cardRedeemRefreshing = ref(false)
+const cardRedeemRefreshFailed = ref(false)
 
-const openCardRedeemDialog = () => {
+const openCardRedeemDialog = async () => {
   showLangMenu.value = false
-  cardRedeemDialog.value?.showModal()
+  showMobileMenu.value = false
+  cardRedeemRefreshing.value = true
+  if (!cardRedeemDialog.value?.open) cardRedeemDialog.value?.showModal()
+  cardRedeemRefreshFailed.value = !(await appStore.loadConfig(true))
+  cardRedeemRefreshing.value = false
 }
 
 const closeCardRedeemOnBackdrop = (event: MouseEvent) => {
@@ -317,14 +335,15 @@ interface NavItem {
   target: string
 }
 
-const cardRedeemNavItem = computed<NavItem>(() => {
+const cardRedeemNavItem = computed<NavItem | null>(() => {
+  if (!cardRedeemProviders.value.length && !cardRedeemURL.value) return null
   return {
     key: 'card-redeem',
-    path: '',
+    path: cardRedeemProviders.value.length ? '' : cardRedeemURL.value,
     label: t('nav.cardRedeem'),
     icon: 'M20 12v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8m16 0H4m16 0l-1.5-5.5a1 1 0 00-1-.75h-11a1 1 0 00-1 .75L4 12m4 0v9m8-9v9M9 6.5V4a3 3 0 016 0v2.5',
-    type: 'action',
-    target: '_self',
+    type: cardRedeemProviders.value.length ? 'action' : 'link',
+    target: cardRedeemProviders.value.length ? '_self' : '_blank',
   }
 })
 

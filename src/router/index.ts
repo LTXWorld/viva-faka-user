@@ -110,6 +110,11 @@ const router = createRouter({
     },
     routes: [
         {
+            path: '/redeem',
+            name: 'card-redeem',
+            component: () => import('../views/Redeem.vue'),
+        },
+        {
             path: '/',
             name: 'home',
             component: homeViewLoader,
